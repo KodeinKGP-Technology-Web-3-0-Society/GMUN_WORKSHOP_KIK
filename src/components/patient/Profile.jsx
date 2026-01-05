@@ -9,11 +9,24 @@ import {
   Users, 
   Edit3, 
   Save, 
-  X 
+  X,
+  CheckCircle
 } from "lucide-react";
+
+function Toast({ message, onClose }) {
+  if (!message) return null;
+  setTimeout(() => onClose(), 3000);
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
+      <CheckCircle className="w-5 h-5" />
+      <span>{message}</span>
+    </div>
+  );
+}
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
+  const [toast, setToast] = useState("");
   const [formData, setFormData] = useState({
     // Personal Information
     firstName: "John",
@@ -49,7 +62,7 @@ function Profile() {
     // Here you would typically send data to backend
     console.log("Saving profile data:", formData);
     setIsEditing(false);
-    // Show success message
+    setToast("Profile updated successfully!");
   };
 
   const handleCancel = () => {
@@ -112,6 +125,7 @@ function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toast message={toast} onClose={() => setToast("")} />
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

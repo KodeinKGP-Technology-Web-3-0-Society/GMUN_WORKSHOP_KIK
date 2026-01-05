@@ -7,7 +7,19 @@ import {
   Save,
   X,
   Hash,
+  CheckCircle
 } from "lucide-react";
+
+function Toast({ message, onClose }) {
+  if (!message) return null;
+  setTimeout(() => onClose(), 3000);
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
+      <CheckCircle className="w-5 h-5" />
+      <span>{message}</span>
+    </div>
+  );
+}
 
 // Mock data for doctor's issued prescriptions
 const MOCK_ISSUED_PRESCRIPTIONS = [
@@ -37,6 +49,7 @@ export default function Prescriptions() {
   const [prescriptions, setPrescriptions] = useState(MOCK_ISSUED_PRESCRIPTIONS);
   const [isCreating, setIsCreating] = useState(false);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const [toast, setToast] = useState("");
   const [newPrescription, setNewPrescription] = useState({
     patientName: "",
     drug: "",
@@ -62,6 +75,7 @@ export default function Prescriptions() {
         status: "Active",
       };
       setPrescriptions([prescription, ...prescriptions]);
+      setToast("Prescription issued successfully!");
       setNewPrescription({
         patientName: "",
         drug: "",
@@ -75,6 +89,7 @@ export default function Prescriptions() {
 
   const handleDeletePrescription = (id) => {
     setPrescriptions(prescriptions.filter((rx) => rx.id !== id));
+    setToast("Prescription deleted successfully!");
     if (selectedPrescription?.id === id) {
       setSelectedPrescription(null);
     }
@@ -82,6 +97,7 @@ export default function Prescriptions() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <Toast message={toast} onClose={() => setToast("")} />
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Header */}

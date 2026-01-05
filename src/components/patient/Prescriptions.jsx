@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Pill, FileText, CheckCircle, Clock, Hash, Download, QrCode } from "lucide-react";
+import { Pill, FileText, CheckCircle, Clock, Hash, Download, QrCode, AlertCircle } from "lucide-react";
+
+function Toast({ message, onClose }) {
+  if (!message) return null;
+  setTimeout(() => onClose(), 3000);
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
+      <CheckCircle className="w-5 h-5" />
+      <span>{message}</span>
+    </div>
+  );
+}
 
 // --- MOCK DATA ---
 const MOCK_PRESCRIPTIONS = [
@@ -29,12 +40,14 @@ const MOCK_PRESCRIPTIONS = [
 
 export default function Prescriptions() {
   const [selectedRxId, setSelectedRxId] = useState(null);
+  const [toast, setToast] = useState("");
 
   // Find the selected prescription object
   const selectedRx = MOCK_PRESCRIPTIONS.find(rx => rx.id === selectedRxId);
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <Toast message={toast} onClose={() => setToast("")} />
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-6 py-8">
           
@@ -137,7 +150,7 @@ export default function Prescriptions() {
                             {selectedRx.ipfsHash}
                           </p>
                         </div>
-                        <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+                        <button onClick={() => setToast("Prescription downloaded successfully!")} className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
                           <Download size={20} />
                         </button>
                       </div>

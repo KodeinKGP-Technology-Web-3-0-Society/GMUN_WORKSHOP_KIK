@@ -1,5 +1,16 @@
 import { useState } from "react";
-import { Users, Mail, Phone, Calendar, FileText, Search } from "lucide-react";
+import { Users, Mail, Phone, Calendar, FileText, Search, CheckCircle } from "lucide-react";
+
+function Toast({ message, onClose }) {
+  if (!message) return null;
+  setTimeout(() => onClose(), 3000);
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
+      <CheckCircle className="w-5 h-5" />
+      <span>{message}</span>
+    </div>
+  );
+}
 
 // Mock patient data
 const MOCK_PATIENTS = [
@@ -48,6 +59,7 @@ const MOCK_PATIENTS = [
 function Patients() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [toast, setToast] = useState("");
 
   const filteredPatients = MOCK_PATIENTS.filter((patient) =>
     patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,6 +69,7 @@ function Patients() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toast message={toast} onClose={() => setToast("")} />
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">

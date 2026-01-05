@@ -1,5 +1,16 @@
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, CheckCircle } from "lucide-react";
 import { useState} from "react";
+
+function Toast({ message, onClose }) {
+  if (!message) return null;
+  setTimeout(() => onClose(), 3000);
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
+      <CheckCircle className="w-5 h-5" />
+      <span>{message}</span>
+    </div>
+  );
+}
 
 
 const doctors = {
@@ -23,6 +34,7 @@ function BookingForm({onDoctorSelect}) {
  const [selectedDate, setSelectedDate] = useState("");
  const [selectedTime, setSelectedTime] = useState("");
  const [reason, setReason] = useState("");
+ const [toast, setToast] = useState("");
 
 const availableDoctors =
   selectedDepartment && doctors[selectedDepartment]
@@ -48,11 +60,18 @@ const availableDoctors =
 
 
    console.log("Booking payload:", payload); // send to backend
+   setToast("Appointment booked successfully!");
+   setSelectedDepartment("");
+   setSelectedDoctor("");
+   setSelectedDate("");
+   setSelectedTime("");
+   setReason("");
  };
 
 
  return (
    <div className="bg-white rounded-lg border border-gray-200 p-6">
+     <Toast message={toast} onClose={() => setToast("")} />
      <div className="space-y-6">
        <div>
          <label className="block text-sm text-gray-700 mb-2">

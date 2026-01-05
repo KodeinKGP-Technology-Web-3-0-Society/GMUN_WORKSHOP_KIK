@@ -1,5 +1,18 @@
 import { useState } from "react";
-import { Calendar, Clock, User, Phone, Mail } from "lucide-react";
+import { Calendar, Clock, User, Phone, Mail, CheckCircle, AlertCircle } from "lucide-react";
+
+function Toast({ message, type = "success", onClose }) {
+  if (!message) return null;
+  setTimeout(() => onClose(), 3000);
+  const bgColor = type === "success" ? "bg-green-500" : "bg-blue-500";
+  const icon = type === "success" ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />;
+  return (
+    <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50`}>
+      {icon}
+      <span>{message}</span>
+    </div>
+  );
+}
 
 // Mock appointments data for doctor
 const MOCK_APPOINTMENTS = [
@@ -41,6 +54,7 @@ const MOCK_APPOINTMENTS = [
 function Appointments() {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [filterStatus, setFilterStatus] = useState("All");
+  const [toast, setToast] = useState({ message: "", type: "success" });
 
   const filteredAppointments =
     filterStatus === "All"
@@ -64,6 +78,7 @@ function Appointments() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: "", type: "success" })} />
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -205,10 +220,22 @@ function Appointments() {
                   </div>
 
                   <div className="flex gap-3 pt-4 border-t border-gray-200">
-                    <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+                    <button
+                      onClick={() => {
+                        setToast({ message: "Appointment marked as complete!", type: "success" });
+                        setSelectedAppointment(null);
+                      }}
+                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+                    >
                       Complete
                     </button>
-                    <button className="flex-1 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 text-sm font-medium">
+                    <button
+                      onClick={() => {
+                        setToast({ message: "Appointment cancelled successfully!", type: "success" });
+                        setSelectedAppointment(null);
+                      }}
+                      className="flex-1 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 text-sm font-medium"
+                    >
                       Cancel
                     </button>
                   </div>

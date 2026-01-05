@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import RoleSelection from "./components/RoleSelection";
+import Login from "./components/Login";
 
 // Patient Components
 import PatientNavbar from "./components/patient/Navbar";
@@ -17,17 +18,32 @@ import DoctorPatients from "./components/doctor/Patients";
 function App() {
   // 1. Track selected role (null for selection, "patient" or "doctor")
   const [selectedRole, setSelectedRole] = useState(null);
+  const [pendingRole, setPendingRole] = useState(null);
   const [activeTab, setActiveTab] = useState("appointments");
 
-  // 2. Handle role selection
+  // 2. Handle role selection -> start login flow (set pending role)
   const handleSelectRole = (role) => {
-    setSelectedRole(role);
-    setActiveTab(role === "doctor" ? "appointments" : "appointments");
+    setPendingRole(role);
   };
 
-  // 3. Render role selection if no role is selected
-  if (!selectedRole) {
+  // 3. Show role selection if no role is selected and no pending login
+  if (!selectedRole && !pendingRole) {
     return <RoleSelection onSelectRole={handleSelectRole} />;
+  }
+
+  // 4. If a role was chosen but user hasn't logged in yet, show Login
+  if (!selectedRole && pendingRole) {
+    return (
+      <Login
+        role={pendingRole}
+        onBack={() => setPendingRole(null)}
+        onLogin={() => {
+          setSelectedRole(pendingRole);
+          setPendingRole(null);
+          setActiveTab("appointments");
+        }}
+      />
+    );
   }
 
   // 4. Logic to determine which component to show based on role
@@ -66,13 +82,14 @@ function App() {
   // 6. Function to handle logout/role change
   const handleLogout = () => {
     setSelectedRole(null);
+    setPendingRole(null);
     setActiveTab("appointments");
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Pass state and setter to Navbar */}
-      <NavbarComponent activeTab={activeTab} setActiveTab={setActiveTab} />
+      <NavbarComponent activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} />
 
       {/* Display the selected component */}
       <main className="animate-in fade-in duration-500">

@@ -1,6 +1,6 @@
 import { LogOut, User } from "lucide-react";
 
-function Navbar({ activeTab, setActiveTab }) {
+function Navbar({ activeTab, setActiveTab, onLogout }) {
   const navItems = [
     { name: "Appointments", id: "appointments" },
     { name: "Patients", id: "patients" },
@@ -41,7 +41,7 @@ function Navbar({ activeTab, setActiveTab }) {
             <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200">
               <User className="w-5 h-5 text-blue-600" />
             </div>
-            <button className="text-gray-400 hover:text-red-500 transition-colors">
+            <button onClick={onLogout} className="text-gray-400 hover:text-red-500 transition-colors" title="Logout">
               <LogOut className="w-5 h-5" />
             </button>
           </div>
