@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import Appointments from "./components/Appointments";
 import Prescriptions from "./components/Prescriptions";
+import Profile from "./components/Profile";
 
 function App() {
   // 1. Setup the state to track navigation
@@ -15,11 +16,7 @@ function App() {
       case "prescriptions":
         return <Prescriptions />;
       case "profile":
-        return (
-          <div className="flex items-center justify-center h-[80vh] text-gray-400">
-            Profile Settings (Coming Soon)
-          </div>
-        );
+        return <Profile />;
       default:
         return <Appointments />;
     }
