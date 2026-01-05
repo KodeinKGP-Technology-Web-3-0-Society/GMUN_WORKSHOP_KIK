@@ -1,28 +1,41 @@
-// import React from "react";
-
-// function App() {
-//   return (
-//     <div className="min-h-screen bg-black flex items-center justify-center">
-//       <h1 className="text-red-500 text-4xl font-bold">KIK GMUN WORKSHOP</h1>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-import  Navbar  from "./components/Navbar";
-import Appointments  from "./components/Appointments"
-
-
+import React, { useState } from "react";
+import Navbar from "./components/Navbar";
+import Appointments from "./components/Appointments";
+import Prescriptions from "./components/Prescriptions";
 
 function App() {
- return (
-   <>
-     <Navbar />
-     <Appointments />
-   </>
- );
-}
+  // 1. Setup the state to track navigation
+  const [activeTab, setActiveTab] = useState("appointments");
 
+  // 2. Logic to determine which component to show
+  const renderComponent = () => {
+    switch (activeTab) {
+      case "appointments":
+        return <Appointments />;
+      case "prescriptions":
+        return <Prescriptions />;
+      case "profile":
+        return (
+          <div className="flex items-center justify-center h-[80vh] text-gray-400">
+            Profile Settings (Coming Soon)
+          </div>
+        );
+      default:
+        return <Appointments />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* 3. Pass state and setter to Navbar */}
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      {/* 4. Display the selected component */}
+      <main className="animate-in fade-in duration-500">
+        {renderComponent()}
+      </main>
+    </div>
+  );
+}
 
 export default App;
