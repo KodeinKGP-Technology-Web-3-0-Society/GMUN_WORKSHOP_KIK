@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Heart, 
-  AlertTriangle, 
-  Users, 
-  Edit3, 
-  Save, 
-  X 
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  Heart,
+  AlertTriangle,
+  MapPin,
+  Droplet,
+  Ruler,
+  Weight,
+  Pill,
+  Activity,
 } from "lucide-react";
 
 function Profile() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
+  const profileData = {
     // Personal Information
     firstName: "John",
     lastName: "Doe",
@@ -23,7 +23,7 @@ function Profile() {
     dateOfBirth: "1990-05-15",
     gender: "Male",
     address: "123 Main Street, City, State 12345",
-    
+
     // Medical Information
     bloodType: "A+",
     height: "5'10\"",
@@ -31,191 +31,257 @@ function Profile() {
     allergies: "Penicillin, Shellfish",
     chronicConditions: "Hypertension",
     currentMedications: "dolo 10mg daily",
-    
+
     // Emergency Contact
     emergencyName: "Jane Doe",
     emergencyRelation: "Spouse",
     emergencyPhone: "+91 8890190188",
-  });
-
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
   };
 
-  const handleSave = () => {
-    // Here you would typically send data to backend
-    console.log("Saving profile data:", formData);
-    setIsEditing(false);
-    // Show success message
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    // Reset form data to original values if needed
-  };
-
-  const ProfileSection = ({ title, icon: Icon, children }) => (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-          <Icon className="w-4 h-4 text-blue-600" />
+  const InfoRow = ({ icon: Icon, label, value }) => (
+    <div className="group py-4 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 -mx-6 px-6 transition-colors">
+      <div className="flex items-start gap-4">
+        <div className="mt-1 w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center shrink-0">
+          <Icon className="w-5 h-5 text-blue-600" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        <div className="flex-1 min-w-0">
+          <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+            {label}
+          </div>
+          <div className="text-gray-900 font-medium leading-relaxed">
+            {value || (
+              <span className="text-gray-400 italic">Not specified</span>
+            )}
+          </div>
+        </div>
       </div>
-      {children}
-    </div>
-  );
-
-  const InputField = ({ label, field, type = "text", placeholder }) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label>
-      {isEditing ? (
-        type === "select" ? (
-          <select
-            value={formData[field]}
-            onChange={(e) => handleInputChange(field, e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        ) : type === "textarea" ? (
-          <textarea
-            value={formData[field]}
-            onChange={(e) => handleInputChange(field, e.target.value)}
-            placeholder={placeholder}
-            rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        ) : (
-          <input
-            type={type}
-            value={formData[field]}
-            onChange={(e) => handleInputChange(field, e.target.value)}
-            placeholder={placeholder}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        )
-      ) : (
-        <div className="px-3 py-2 bg-gray-50 rounded-md text-gray-900">
-          {formData[field] || "Not specified"}
-        </div>
-      )}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Profile Settings</h1>
-            <p className="text-sm text-gray-600 mt-1">
-              Manage your personal and medical information
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20">
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        {/* Hero Header */}
+        <div className="mb-12">
+          <div className="mb-6">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2 tracking-tight">
+                {profileData.firstName} {profileData.lastName}
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Patient Profile & Medical Records
+              </p>
+            </div>
           </div>
-          
-          <div className="flex items-center gap-3">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={handleCancel}
-                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  <X className="w-4 h-4" />
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  <Save className="w-4 h-4" />
-                  Save Changes
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                <Edit3 className="w-4 h-4" />
-                Edit Profile
-              </button>
-            )}
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center">
+                  <Droplet className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                    Blood Type
+                  </div>
+                  <div className="text-xl font-bold text-gray-900">
+                    {profileData.bloodType}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <Ruler className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                    Height
+                  </div>
+                  <div className="text-xl font-bold text-gray-900">
+                    {profileData.height}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
+                  <Weight className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                    Weight
+                  </div>
+                  <div className="text-xl font-bold text-gray-900">
+                    {profileData.weight}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                    Age
+                  </div>
+                  <div className="text-xl font-bold text-gray-900">
+                    {new Date().getFullYear() -
+                      new Date(profileData.dateOfBirth).getFullYear()}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Personal Information */}
-          <ProfileSection title="Personal Information" icon={User}>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <InputField label="First Name" field="firstName" />
-                <InputField label="Last Name" field="lastName" />
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Personal Information - Spans 2 columns */}
+          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                <User className="w-6 h-6 text-white" />
               </div>
-              <InputField label="Email Address" field="email" type="email" />
-              <InputField label="Phone Number" field="phone" type="tel" />
-              <InputField label="Date of Birth" field="dateOfBirth" type="date" />
-              <InputField label="Gender" field="gender" type="select" />
-              <InputField label="Address" field="address" type="textarea" />
+              <h2 className="text-2xl font-bold text-gray-900">
+                Personal Information
+              </h2>
             </div>
-          </ProfileSection>
 
-          {/* Medical Information */}
-          <ProfileSection title="Medical Information" icon={Heart}>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <InputField label="Blood Type" field="bloodType" />
-                <InputField label="Height" field="height" />
+            <div>
+              <div className="grid md:grid-cols-2 gap-x-8">
+                <InfoRow
+                  icon={User}
+                  label="First Name"
+                  value={profileData.firstName}
+                />
+                <InfoRow
+                  icon={User}
+                  label="Last Name"
+                  value={profileData.lastName}
+                />
               </div>
-              <InputField label="Weight" field="weight" />
-              <InputField 
-                label="Allergies" 
-                field="allergies" 
-                type="textarea"
-                placeholder="List any known allergies..."
+              <InfoRow
+                icon={Mail}
+                label="Email Address"
+                value={profileData.email}
               />
-              <InputField 
-                label="Chronic Conditions" 
-                field="chronicConditions" 
-                type="textarea"
-                placeholder="List any chronic medical conditions..."
+              <InfoRow
+                icon={Phone}
+                label="Phone Number"
+                value={profileData.phone}
               />
-              <InputField 
-                label="Current Medications" 
-                field="currentMedications" 
-                type="textarea"
-                placeholder="List current medications and dosages..."
+              <InfoRow
+                icon={Calendar}
+                label="Date of Birth"
+                value={profileData.dateOfBirth}
+              />
+              <InfoRow icon={User} label="Gender" value={profileData.gender} />
+              <InfoRow
+                icon={MapPin}
+                label="Address"
+                value={profileData.address}
               />
             </div>
-          </ProfileSection>
+          </div>
 
           {/* Emergency Contact */}
-          <ProfileSection title="Emergency Contact" icon={AlertTriangle}>
-            <div className="space-y-4">
-              <InputField label="Full Name" field="emergencyName" />
-              <InputField label="Relationship" field="emergencyRelation" />
-              <InputField label="Phone Number" field="emergencyPhone" type="tel" />
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold">Emergency Contact</h2>
             </div>
-          </ProfileSection>
+
+            <div className="space-y-5">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wider mb-2 text-white/70">
+                  Full Name
+                </div>
+                <div className="text-lg font-semibold">
+                  {profileData.emergencyName}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wider mb-2 text-white/70">
+                  Relationship
+                </div>
+                <div className="text-lg font-semibold">
+                  {profileData.emergencyRelation}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wider mb-2 text-white/70">
+                  Phone Number
+                </div>
+                <div className="text-lg font-semibold">
+                  {profileData.emergencyPhone}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-white/20">
+              <div className="flex items-start gap-2 text-sm text-white/90">
+                <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                <p>
+                  This contact will be notified in case of medical emergencies.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Medical Information - Full width */}
+          <div className="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Medical Information
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-x-8">
+              <InfoRow
+                icon={AlertTriangle}
+                label="Allergies"
+                value={profileData.allergies}
+              />
+              <InfoRow
+                icon={Activity}
+                label="Chronic Conditions"
+                value={profileData.chronicConditions}
+              />
+            </div>
+            <InfoRow
+              icon={Pill}
+              label="Current Medications"
+              value={profileData.currentMedications}
+            />
+          </div>
         </div>
 
-        {/* Additional Information Note */}
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="flex gap-3">
-            <AlertTriangle className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-            <div className="text-sm text-blue-800">
-              <p className="font-medium mb-1">Important Note</p>
-              <p>
-                Please ensure all medical information is accurate and up-to-date. 
-                This information helps healthcare providers give you better care during emergencies.
+        {/* Information Note */}
+        <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+          <div className="flex gap-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-1">
+                Keep Your Information Current
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Accurate and up-to-date medical information enables healthcare
+                providers to deliver better care during appointments and
+                emergencies. Please review and update your profile regularly.
               </p>
             </div>
           </div>
