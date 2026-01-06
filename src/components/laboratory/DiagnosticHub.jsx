@@ -1,30 +1,26 @@
-import React from 'react';
-import LabReportForm from './LabReportForm';
-import ReportCard from './ReportCard';
+import React from "react";
+import { Activity, ShieldCheck, Database, Clock } from "lucide-react";
 
 const DiagnosticHub = () => {
+  const stats = [
+    { label: "Reports Minted", value: "128", icon: <ShieldCheck className="text-green-600" /> },
+    { label: "IPFS Storage Used", value: "1.2 GB", icon: <Database className="text-blue-600" /> },
+    { label: "Pending Uploads", value: "3", icon: <Clock className="text-orange-600" /> },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-10">
-          <h1 className="text-3xl font-extrabold text-gray-900 italic">MedChain Laboratory Hub</h1>
-          <p className="text-gray-600">Securely uploading and managing patient diagnostic records via NFT reports.</p>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Upload Section */}
-          <div className="lg:col-span-1">
-            <LabReportForm />
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-800">Laboratory Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {stats.map((stat, i) => (
+          <div key={i} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div className="p-3 bg-gray-50 rounded-lg">{stat.icon}</div>
+            <div>
+              <p className="text-sm text-gray-500">{stat.label}</p>
+              <p className="text-2xl font-bold">{stat.value}</p>
+            </div>
           </div>
-
-          {/* History Section */}
-          <div className="lg:col-span-2 space-y-4">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Recent Reports Issued</h2>
-            <ReportCard reportName="Blood Work - Panel A" date="Oct 24, 2023" doctor="City Central Lab" />
-            <ReportCard reportName="Chest X-Ray (Full)" date="Oct 22, 2023" doctor="Modern Imaging Center" />
-            <ReportCard reportName="MRI Lumbar Spine" date="Oct 15, 2023" doctor="Modern Imaging Center" />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

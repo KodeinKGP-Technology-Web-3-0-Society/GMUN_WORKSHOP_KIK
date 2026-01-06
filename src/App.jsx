@@ -14,72 +14,88 @@ import DoctorPrescriptions from "./components/doctor/Prescriptions";
 import DoctorProfile from "./components/doctor/Profile";
 import DoctorPatients from "./components/doctor/Patients";
 
+// Laboratory Components
+import LabNavbar from "./components/laboratory/Navbar"; // Ensure you create this
+import LabReportForm from "./components/laboratory/LabReportForm";
+import FileUpload from "./components/laboratory/FileUpload";
+import ReportCard from "./components/laboratory/ReportCard";
+import DiagnosticHub from "./components/laboratory/DiagnosticHub";
+
 function App() {
-  // 1. Track selected role (null for selection, "patient" or "doctor")
   const [selectedRole, setSelectedRole] = useState(null);
   const [activeTab, setActiveTab] = useState("appointments");
 
-  // 2. Handle role selection
   const handleSelectRole = (role) => {
     setSelectedRole(role);
-    setActiveTab(role === "doctor" ? "appointments" : "appointments");
+    // Set default tab based on role
+    if (role === "laboratory") {
+        setActiveTab("upload");
+    } else {
+        setActiveTab("appointments");
+    }
   };
 
-  // 3. Render role selection if no role is selected
-  if (!selectedRole) {
-    return <RoleSelection onSelectRole={handleSelectRole} />;
-  }
-
-  // 4. Logic to determine which component to show based on role
   const renderComponent = () => {
     if (selectedRole === "patient") {
       switch (activeTab) {
-        case "appointments":
-          return <PatientAppointments />;
-        case "prescriptions":
-          return <PatientPrescriptions />;
-        case "profile":
-          return <PatientProfile />;
-        default:
-          return <PatientAppointments />;
+        case "appointments": return <PatientAppointments />;
+        case "prescriptions": return <PatientPrescriptions />;
+        case "profile": return <PatientProfile />;
+        default: return <PatientAppointments />;
       }
     } else if (selectedRole === "doctor") {
       switch (activeTab) {
-        case "appointments":
-          return <DoctorAppointments />;
-        case "patients":
-          return <DoctorPatients />;
-        case "prescriptions":
-          return <DoctorPrescriptions />;
-        case "profile":
-          return <DoctorProfile />;
-        default:
-          return <DoctorAppointments />;
+        case "appointments": return <DoctorAppointments />;
+        case "patients": return <DoctorPatients />;
+        case "prescriptions": return <DoctorPrescriptions />;
+        case "profile": return <DoctorProfile />;
+        default: return <DoctorAppointments />;
+      }
+    } else if (selectedRole === "laboratory") {
+      // Mapping to your imported Laboratory components
+      switch (activeTab) {
+        case "dashboard": 
+          return <DiagnosticHub />; // Main overview [cite: 1]
+        case "upload": 
+          return <LabReportForm />; // Form to mint NFT reports [cite: 1]
+        case "file-manager": 
+          return <FileUpload />;   // Direct access to IPFS upload tool [cite: 1]
+        case "reports": 
+          return <ReportCard />;   // View individual report status [cite: 1]
+        default: 
+          return <DiagnosticHub />;
       }
     }
   };
 
-  // 5. Select appropriate Navbar based on role
-  const NavbarComponent =
-    selectedRole === "patient" ? PatientNavbar : DoctorNavbar;
+  if (!selectedRole) {
+    return <RoleSelection onSelectRole={handleSelectRole} />;
+  }
 
-  // 6. Function to handle logout/role change
-  const handleLogout = () => {
-    setSelectedRole(null);
-    setActiveTab("appointments");
+  // Updated Navbar selection logic to include Laboratory
+  const getNavbar = () => {
+    if (selectedRole === "patient") return PatientNavbar;
+    if (selectedRole === "doctor") return DoctorNavbar;
+    if (selectedRole === "laboratory") return LabNavbar;
+    // return LabNavbar;
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Pass state and setter to Navbar */}
-      <NavbarComponent activeTab={activeTab} setActiveTab={setActiveTab} />
+  const NavbarComponent = getNavbar();
 
-      {/* Display the selected component */}
-      <main className="animate-in fade-in duration-500">
+  // Added the missing return statement for the main UI
+  // Inside your App.jsx return statement
+return (
+  <div className="min-h-screen bg-gray-50">
+    <NavbarComponent activeTab={activeTab} setActiveTab={setActiveTab} />
+    
+    {/* Use mx-auto and max-w-7xl to center and bound the content */}
+    <main className="max-w-7xl mx-auto py-10 px-6 animate-in fade-in duration-500">
+      <div className="flex justify-center"> 
         {renderComponent()}
-      </main>
-    </div>
-  );
-}
+      </div>
+    </main>
+  </div>
+ );
+} // Added the missing closing brace for the App function
 
 export default App;
