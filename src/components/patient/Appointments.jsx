@@ -6,9 +6,11 @@ function Appointments() {
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+    // Added w-full to ensure the base container spans the entire viewport
+    <div className="min-h-screen w-full bg-white flex flex-col">
+      <main className="flex-1 w-full">
+        <div className="w-full px-6 py-8">
+          
           <div className="mb-8">
             <h1 className="text-2xl font-semibold text-gray-900">
               Book an Appointment
@@ -25,10 +27,11 @@ function Appointments() {
               <DoctorInfo doctorId={selectedDoctorId} />
             </div>
           </div>
+
         </div>
       </main>
     </div>
   );
 }
 
-export default Appointments
+export default Appointments;

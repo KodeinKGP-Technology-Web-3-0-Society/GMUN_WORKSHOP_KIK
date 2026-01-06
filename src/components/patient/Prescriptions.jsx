@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import { Pill, FileText, CheckCircle, Clock, Hash, Download, QrCode } from "lucide-react";
 
-// --- MOCK DATA ---
 const MOCK_PRESCRIPTIONS = [
-  { 
-    id: "RX-9021", 
-    drug: "Amoxicillin", 
-    dosage: "500mg", 
-    doctor: "Dr. Arpan Sharma", 
-    date: "Dec 28, 2025", 
+  {
+    id: "RX-9021",
+    drug: "Amoxicillin",
+    dosage: "500mg",
+    doctor: "Dr. Arpan Sharma",
+    date: "Dec 28, 2025",
     status: "Active",
-    instructions: "Take one capsule three times daily for 7 days.",
+    instructions: "Take one capsule three times daily for 7 days. Take one capsule three times daily for 7 days. Take one capsule three times daily for 7 days.",
     ipfsHash: "QmXoyp...3289",
     type: "Antibiotic"
   },
   { 
-    id: "RX-8842", 
-    drug: "Metformin", 
-    dosage: "850mg", 
-    doctor: "Dr. Neha Gupta", 
-    date: "Nov 15, 2025", 
+    id: "RX-8842",
+    drug: "Metformin",
+    dosage: "850mg",
+    doctor: "Dr. Neha Gupta",
+    date: "Nov 15, 2025",
     status: "Fulfilled",
     instructions: "Take with meals once daily.",
     ipfsHash: "QmTzWq...7712",
@@ -30,14 +29,13 @@ const MOCK_PRESCRIPTIONS = [
 export default function Prescriptions() {
   const [selectedRxId, setSelectedRxId] = useState(null);
 
-  // Find the selected prescription object
   const selectedRx = MOCK_PRESCRIPTIONS.find(rx => rx.id === selectedRxId);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          
+    <div className="min-h-screen w-full bg-white flex flex-col">
+      <main className="flex-1 w-full">
+        <div className="w-full px-6 py-8">
+
           {/* Header */}
           <div className="mb-8 border-b border-gray-100 pb-6">
             <h1 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
@@ -50,7 +48,7 @@ export default function Prescriptions() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            
+
             {/* LEFT COLUMN: Prescription List */}
             <div className="lg:col-span-1 space-y-4">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">
@@ -61,19 +59,17 @@ export default function Prescriptions() {
                   <div
                     key={rx.id}
                     onClick={() => setSelectedRxId(rx.id)}
-                    className={`p-4 rounded-xl cursor-pointer border transition-all duration-200 ${
-                      selectedRxId === rx.id 
-                        ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500" 
+                    className={`p-4 rounded-xl cursor-pointer border transition-all duration-200 ${selectedRxId === rx.id
+                        ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500"
                         : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div className="p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
                         <Pill className={selectedRxId === rx.id ? "text-blue-600" : "text-gray-400"} size={18} />
                       </div>
-                      <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${
-                        rx.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                      }`}>
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${rx.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                        }`}>
                         {rx.status}
                       </span>
                     </div>
@@ -111,33 +107,37 @@ export default function Prescriptions() {
 
                   {/* Detail Body */}
                   <div className="p-8 space-y-8">
-                    <div className="grid md:grid-cols-2 gap-8">
-                      <div>
+                    <div className="flex flex-col gap-8">
+
+                      <div className="pb-6 border-b border-gray-50">
                         <h4 className="text-xs font-bold text-gray-400 uppercase mb-3 flex items-center gap-2">
                           <Clock size={14} /> Usage Instructions
                         </h4>
-                        <p className="text-gray-800 leading-relaxed italic">
+                        <p className="text-gray-800 leading-relaxed italic wrap-break-words">
                           "{selectedRx.instructions}"
                         </p>
                       </div>
+
                       <div>
                         <h4 className="text-xs font-bold text-gray-400 uppercase mb-3 flex items-center gap-2">
                           <CheckCircle size={14} /> Issuing Doctor
                         </h4>
-                        <p className="text-gray-800 font-medium">{selectedRx.doctor}</p>
-                        <p className="text-xs text-gray-500 mt-1">Verified Medical License Verified via DAO</p>
+                        <p className="text-gray-800 font-semibold text-lg">{selectedRx.doctor}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="flex h-2 w-2 rounded-full bg-green-500"></span>
+                          <p className="text-xs text-gray-500">Verified Medical License via DAO</p>
+                        </div>
                       </div>
                     </div>
-
                     <div className="pt-6 border-t border-gray-100">
                       <div className="bg-gray-50 p-4 rounded-xl flex items-center justify-between">
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <p className="text-[10px] text-gray-400 font-bold uppercase">IPFS Content Hash</p>
-                          <p className="text-xs font-mono text-gray-600 truncate max-w-50 md:max-w-md">
+                          <p className="text-xs font-mono text-gray-600 truncate">
                             {selectedRx.ipfsHash}
                           </p>
                         </div>
-                        <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+                        <button className="ml-4 p-2 text-gray-400 hover:text-blue-600 transition-colors shrink-0">
                           <Download size={20} />
                         </button>
                       </div>
