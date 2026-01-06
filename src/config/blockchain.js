@@ -1,11 +1,11 @@
 // Blockchain Configuration
 export const BLOCKCHAIN_CONFIG = {
-  // Polygon Mumbai Testnet (Recommended for development - free gas)
+  // Polygon Amoy Testnet (Recommended for development - free gas)
   NETWORK: {
-    name: "Polygon Mumbai",
-    chainId: 80001,
-    rpcUrl: "https://rpc-mumbai.maticvigil.com",
-    explorer: "https://mumbai.polygonscan.com",
+    name: "Polygon Amoy",
+    chainId: 80002,
+    rpcUrl: "https://rpc-amoy.polygon.technology",
+    explorer: "https://amoy.polygonscan.com",
   },
 
   // Contract Address (Deploy your contract and update this)
@@ -34,10 +34,10 @@ STEP 1: Deploy Smart Contract
 1. Go to Remix IDE: https://remix.ethereum.org/
 2. Create new file and paste MedicalRecordsStorage.sol content
 3. Compile the contract (Ctrl+S)
-4. Add Polygon Mumbai RPC to MetaMask:
-   - Chain ID: 80001
-   - RPC: https://rpc-mumbai.maticvigil.com
-5. Get test MATIC: https://faucet.polygon.technology/
+4. Add Polygon Amoy RPC to MetaMask:
+   - Chain ID: 80002
+   - RPC: https://rpc-amoy.polygon.technology
+5. Get test MATIC: https://faucet.polygon.technology/ (Select Amoy)
 6. Deploy using Injected Web3 provider
 7. Copy deployed contract address
 

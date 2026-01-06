@@ -94,7 +94,7 @@ Root/
 1. Go to https://remix.ethereum.org/
 2. Create new file: MedicalRecordsStorage.sol
 3. Copy from src/contracts/
-4. Compile & Deploy to Mumbai
+4. Compile & Deploy to Amoy
 5. Copy deployed address
 ```
 
@@ -160,16 +160,16 @@ Large Medical File
 - ✅ **Access Control** - Grant/revoke doctor access to patient records
 - ✅ **Audit Trail** - All transactions logged on blockchain
 - ✅ **IPFS Integration** - Large file storage via Pinata
-- ✅ **Test Network** - Polygon Mumbai for free testing
+- ✅ **Test Network** - Polygon Amoy for free testing
 
 ## 🌐 Network Information
 
-### Development (Polygon Mumbai)
+### Development (Polygon Amoy)
 - **Status**: Free testnet
 - **Gas Fees**: Free
 - **Faucet**: https://faucet.polygon.technology/
-- **Explorer**: https://mumbai.polygonscan.com/
-- **RPC**: https://rpc-mumbai.maticvigil.com
+- **Explorer**: https://amoy.polygonscan.com/
+- **RPC**: https://rpc-amoy.polygon.technology
 
 ### Production (Polygon Mainnet)
 - **Status**: Live blockchain

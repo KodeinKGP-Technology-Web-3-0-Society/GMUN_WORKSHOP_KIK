@@ -167,7 +167,7 @@ Get current network and wallet information.
 ```javascript
 const info = await blockchainService.getNetworkInfo();
 // {
-//   chainId: 80001,
+//   chainId: 80002,
 //   name: 'maticmum',
 //   balance: '0.5'
 // }
@@ -356,8 +356,8 @@ Main configuration object.
 import { BLOCKCHAIN_CONFIG } from './config/blockchain';
 
 // Network settings
-BLOCKCHAIN_CONFIG.NETWORK.name        // "Polygon Mumbai"
-BLOCKCHAIN_CONFIG.NETWORK.chainId     // 80001
+BLOCKCHAIN_CONFIG.NETWORK.name        // "Polygon Amoy"
+BLOCKCHAIN_CONFIG.NETWORK.chainId     // 80002
 BLOCKCHAIN_CONFIG.NETWORK.rpcUrl      // RPC endpoint
 BLOCKCHAIN_CONFIG.NETWORK.explorer    // Block explorer URL
 

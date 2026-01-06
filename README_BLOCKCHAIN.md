@@ -158,18 +158,18 @@ npm run lint
 
 ### Automatically Handled
 - ✅ MetaMask network switching
-- ✅ Polygon Mumbai auto-configuration
+- ✅ Polygon Amoy auto-configuration
 - ✅ RPC endpoint setup
 - ✅ Chain ID configuration
 
 ### Manual If Needed
 ```
-Network: Polygon Mumbai
-Chain ID: 80001
-RPC: https://rpc-mumbai.maticvigil.com
+Network: Polygon Amoy
+Chain ID: 80002
+RPC: https://rpc-amoy.polygon.technology
 Currency: MATIC
-Faucet: https://faucet.polygon.technology/
-Explorer: https://mumbai.polygonscan.com/
+Faucet: https://faucet.polygon.technology/ (select Amoy)
+Explorer: https://amoy.polygonscan.com/
 ```
 
 ---

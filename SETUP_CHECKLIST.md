@@ -44,7 +44,7 @@
 4. Click "Compile" button (Ctrl+S)
 5. Switch to "Deploy & Run Transactions" tab
 6. Select "Injected Provider - MetaMask" as environment
-7. Make sure MetaMask is on "Polygon Mumbai" network
+7. Make sure MetaMask is on "Polygon Amoy" network
 8. Click "Deploy" button
 9. Approve MetaMask transaction
 10. COPY the deployed contract address
@@ -77,10 +77,10 @@ VITE_PINATA_SECRET_KEY=
 **Time: 2 minutes**
 
 1. Install MetaMask: https://metamask.io/
-2. Add Polygon Mumbai network (auto-added when connecting)
+2. Add Polygon Amoy network (auto-added when connecting)
 3. Visit https://faucet.polygon.technology/
 4. Paste your MetaMask address
-5. Select "Polygon Mumbai"
+5. Select "Polygon Amoy"
 6. Click "Send Me MATIC"
 7. Wait for confirmation (usually instant)
 
@@ -229,7 +229,7 @@ cat .env.local         # Should have VITE_CONTRACT_ADDRESS
 - Shows wallet connection button
 - Handles MetaMask integration
 - Displays connected address
-- Auto-switches to Mumbai network
+- Auto-switches to Amoy network
 
 ### BlockchainRecordUpload
 - Form to store medical records
@@ -255,7 +255,7 @@ cat .env.local         # Should have VITE_CONTRACT_ADDRESS
 
 ### 1. Smart Contract Deployed
 ```
-✓ Can see it on: https://mumbai.polygonscan.com/
+✓ Can see it on: https://amoy.polygonscan.com/
 ✓ Search by contract address
 ✓ View source code & functions
 ```
@@ -264,7 +264,7 @@ cat .env.local         # Should have VITE_CONTRACT_ADDRESS
 ```
 ✓ MetaMask shows connected status
 ✓ Address displayed in header
-✓ Network shows "Polygon Mumbai"
+✓ Network shows "Polygon Amoy"
 ```
 
 ### 3. Blockchain Operations
@@ -355,7 +355,7 @@ const { hash } = await ipfsService.uploadFile(file);
 1. **Read relevant documentation file** - Most questions answered
 2. **Check browser console** - Error messages are helpful
 3. **Verify .env.local** - Most issues from missing config
-4. **Check network** - Ensure on Mumbai testnet
+4. **Check network** - Ensure on Amoy testnet
 5. **Verify wallet** - Ensure MetaMask unlocked
 
 ---

@@ -41,14 +41,14 @@ npm install ethers
 2. Create new file `MedicalRecordsStorage.sol`
 3. Copy contract from `src/contracts/MedicalRecordsStorage.sol`
 4. Compile with Solidity 0.8.0+
-5. Deploy to Polygon Mumbai using MetaMask
+5. Deploy to Polygon Amoy using MetaMask:
 
 #### Option B: Using Hardhat (Advanced)
 ```bash
 npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
 npx hardhat init
 # Copy contract to contracts/ folder
-npx hardhat run scripts/deploy.js --network mumbai
+npx hardhat run scripts/deploy.js --network amoy
 ```
 
 ### 3. **Setup Environment Variables**
@@ -75,12 +75,12 @@ VITE_PINATA_SECRET_KEY=your_secret_key_here
 ### 5. **Setup MetaMask**
 
 1. Install [MetaMask](https://metamask.io) browser extension
-2. Add Polygon Mumbai network:
-   - **Network Name**: Polygon Mumbai
-   - **RPC URL**: https://rpc-mumbai.maticvigil.com
-   - **Chain ID**: 80001
+2. Add Polygon Amoy network:
+   - **Network Name**: Polygon Amoy
+   - **RPC URL**: https://rpc-amoy.polygon.technology
+   - **Chain ID**: 80002
    - **Currency**: MATIC
-3. Get test MATIC from [Faucet](https://faucet.polygon.technology/)
+3. Get test MATIC from [Faucet](https://faucet.polygon.technology/) (Select Amoy)
 
 ### 6. **Run Application**
 
@@ -192,10 +192,10 @@ const file = await ipfsService.getFile(ipfsHash);
 
 ## Network Information
 
-### Polygon Mumbai (Testnet - FREE)
+### Polygon Amoy (Testnet - FREE)
 - **Best for**: Development & Testing
 - **Gas Fees**: Free
-- **Explorer**: https://mumbai.polygonscan.com
+- **Explorer**: https://amoy.polygonscan.com
 - **Faucet**: https://faucet.polygon.technology/
 
 ### Polygon Mainnet (Mainnet - PRODUCTION)
@@ -223,7 +223,7 @@ const file = await ipfsService.getFile(ipfsHash);
 ### "Contract not initialized" error
 - Verify CONTRACT_ADDRESS in .env.local
 - Check that address is deployed on correct network
-- Ensure you're on Polygon Mumbai network
+- Ensure you're on Polygon Amoy network
 
 ### IPFS upload failing
 - Check Pinata API keys are correct

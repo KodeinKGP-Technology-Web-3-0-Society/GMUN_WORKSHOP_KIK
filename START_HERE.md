@@ -9,7 +9,7 @@ Your healthcare application now has full blockchain support. Here's what was del
 ✅ **Web3 Service** - blockchainService.js for blockchain interactions  
 ✅ **IPFS Service** - ipfsService.js for decentralized file storage  
 ✅ **MetaMask Integration** - Wallet connection & transaction signing  
-✅ **Polygon Mumbai Support** - Free testnet for development  
+✅ **Polygon Amoy Support** - Free testnet for development  
 
 ### Ready-to-Use Components
 ✅ **BlockchainConnect** - One-click wallet connection  
@@ -34,7 +34,7 @@ Your healthcare application now has full blockchain support. Here's what was del
 Visit https://remix.ethereum.org/
 Create MedicalRecordsStorage.sol
 Copy from: src/contracts/MedicalRecordsStorage.sol
-Deploy to Polygon Mumbai
+Deploy to Polygon Amoy
 Copy contract address
 ```
 
@@ -184,11 +184,11 @@ Healthcare App (React)
 
 ## 🌐 Network Details
 
-**Polygon Mumbai Testnet (Development)**
-- Chain ID: 80001
-- RPC: https://rpc-mumbai.maticvigil.com
-- Explorer: https://mumbai.polygonscan.com
-- Faucet: https://faucet.polygon.technology/
+**Polygon Amoy Testnet (Development)**
+- Chain ID: 80002
+- RPC: https://rpc-amoy.polygon.technology
+- Explorer: https://amoy.polygonscan.com
+- Faucet: https://faucet.polygon.technology/ (select Amoy)
 - Cost: FREE ✅
 
 **Polygon Mainnet (Production)**
@@ -276,7 +276,7 @@ Healthcare App (React)
 → Install from metamask.io
 
 **"Wrong network"**
-→ MetaMask auto-switches to Mumbai
+→ MetaMask auto-switches to Amoy
 
 **"No test tokens"**
 → Visit faucet.polygon.technology/
@@ -326,7 +326,7 @@ Everything is set up and ready to use. Your healthcare application now has:
 ✅ IPFS decentralized storage  
 ✅ Full audit trails  
 ✅ Access control system  
-✅ Free testnet (Polygon Mumbai)  
+✅ Free testnet (Polygon Amoy)  
 ✅ MetaMask wallet integration  
 ✅ Complete documentation  
 

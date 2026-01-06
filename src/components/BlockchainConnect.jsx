@@ -22,11 +22,11 @@ export default function BlockchainConnect({ onConnected }) {
 
       setWalletAddress(accounts[0]);
 
-      // Switch to Polygon Mumbai if not already on it
+      // Switch to Polygon Amoy if not already on it
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0x13881" }], // Polygon Mumbai
+          params: [{ chainId: "0x13882" }], // Polygon Amoy
         });
       } catch (switchError) {
         if (switchError.code === 4902) {
@@ -35,15 +35,15 @@ export default function BlockchainConnect({ onConnected }) {
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainId: "0x13881",
-                chainName: "Polygon Mumbai",
+                chainId: "0x13882",
+                chainName: "Polygon Amoy",
                 nativeCurrency: {
                   name: "MATIC",
                   symbol: "MATIC",
                   decimals: 18,
                 },
-                rpcUrls: ["https://rpc-mumbai.maticvigil.com"],
-                blockExplorerUrls: ["https://mumbai.polygonscan.com"],
+                rpcUrls: ["https://rpc-amoy.polygon.technology"],
+                blockExplorerUrls: ["https://amoy.polygonscan.com"],
               },
             ],
           });

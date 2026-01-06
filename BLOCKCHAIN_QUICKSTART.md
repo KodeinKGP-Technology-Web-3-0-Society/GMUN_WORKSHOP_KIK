@@ -21,7 +21,7 @@
 4. Click "Compile" (Ctrl+S)
 5. In "Deploy & Run Transactions":
    - Select "Injected Provider" (MetaMask)
-   - Make sure MetaMask is on Polygon Mumbai
+   - Make sure MetaMask is on Polygon Amoy
    - Click "Deploy"
 6. **Copy contract address** from deployed contracts
 
@@ -29,7 +29,7 @@
 
 1. Open https://faucet.polygon.technology/
 2. Paste your MetaMask address
-3. Select "Polygon Mumbai"
+3. Select "Polygon Amoy"
 4. Request 0.5 MATIC (sufficient for testing)
 
 ### Step 3: Configure App (2 mins)
@@ -137,7 +137,7 @@ export default function Appointments() {
     └────┬────┘    └───┬──────────┘
          │             │
     ┌────▼─────────────▼────────┐
-    │ Polygon Mumbai Testnet    │
+    │ Polygon Amoy Testnet      │
     │ (Blockchain)              │
     └───────────────────────────┘
 ```
