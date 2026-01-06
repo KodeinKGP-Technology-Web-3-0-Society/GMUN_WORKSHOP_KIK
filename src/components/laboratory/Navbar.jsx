@@ -1,7 +1,7 @@
 import React from "react";
 import { LayoutDashboard, Upload, FolderOpen, FileText, LogOut } from "lucide-react";
 
-const LabNavbar = ({ activeTab, setActiveTab }) => {
+const LabNavbar = ({ activeTab, setActiveTab, setSelectedRole }) => {
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { id: "upload", label: "Issue Report", icon: <Upload size={18} /> },
@@ -13,7 +13,9 @@ const LabNavbar = ({ activeTab, setActiveTab }) => {
     <nav className="bg-white border-b border-gray-200 px-6 py-3 shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xl font-bold text-gray-900">MedChain <span className="text-purple-600">LABS</span></span>
+          <span className="text-xl font-bold text-gray-900"
+            onClick={()=>setSelectedRole(null)}
+          >MedChain <span className="text-purple-600">LABS</span></span>
         </div>
 
         <div className="hidden md:flex items-center gap-1">

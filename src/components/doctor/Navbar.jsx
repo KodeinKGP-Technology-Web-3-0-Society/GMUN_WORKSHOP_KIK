@@ -1,6 +1,6 @@
 import { LogOut, User } from "lucide-react";
 
-function Navbar({ activeTab, setActiveTab }) {
+function Navbar({ activeTab, setActiveTab, setSelectedRole }) {
   const navItems = [
     { name: "Appointments", id: "appointments" },
     { name: "Patients", id: "patients" },
@@ -13,7 +13,7 @@ function Navbar({ activeTab, setActiveTab }) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-14">
-            <div className="text-xl font-bold text-blue-600 tracking-tight cursor-pointer" onClick={() => setActiveTab("appointments")}>
+            <div className="text-xl font-bold text-blue-600 tracking-tight cursor-pointer" onClick={() => {setActiveTab("appointments"); setSelectedRole(null)}}>
               MedChain
             </div>
             <div className="flex gap-8">

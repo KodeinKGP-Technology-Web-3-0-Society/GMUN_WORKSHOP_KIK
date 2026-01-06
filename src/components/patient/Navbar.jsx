@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom"
 import { LogOut, User, Menu, X } from "lucide-react";
 
-function Navbar({ activeTab, setActiveTab }) {
+function Navbar({ activeTab, setActiveTab, setSelectedRole }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
@@ -25,7 +26,7 @@ function Navbar({ activeTab, setActiveTab }) {
           <div className="flex items-center gap-8 lg:gap-14">
             <div 
               className="text-xl font-bold text-blue-600 tracking-tight cursor-pointer shrink-0" 
-              onClick={() => handleTabClick("appointments")}
+              onClick={() => {handleTabClick("appointments"); setSelectedRole(null)}}
             >
               MedChain
             </div>

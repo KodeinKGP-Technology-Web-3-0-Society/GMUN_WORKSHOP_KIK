@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RoleSelection from "./components/RoleSelection";
 
 // Patient Components
@@ -24,7 +24,18 @@ import DiagnosticHub from "./components/laboratory/DiagnosticHub";
 function App() {
   const [selectedRole, setSelectedRole] = useState(null);
   const [activeTab, setActiveTab] = useState("appointments");
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "Reload??"; // required for Chrome
+    };
 
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   const handleSelectRole = (role) => {
     setSelectedRole(role);
     // Set default tab based on role
@@ -81,12 +92,11 @@ function App() {
   };
 
   const NavbarComponent = getNavbar();
-
   // Added the missing return statement for the main UI
   // Inside your App.jsx return statement
 return (
   <div className="min-h-screen bg-gray-50">
-    <NavbarComponent activeTab={activeTab} setActiveTab={setActiveTab} />
+    <NavbarComponent activeTab={activeTab} setActiveTab={setActiveTab} setSelectedRole={setSelectedRole} />
     
     {/* Use mx-auto and max-w-7xl to center and bound the content */}
     <main className="max-w-7xl mx-auto py-10 px-6 animate-in fade-in duration-500">
