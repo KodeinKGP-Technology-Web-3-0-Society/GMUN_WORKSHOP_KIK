@@ -77,7 +77,7 @@ function App() {
     if (selectedRole === "patient") return PatientNavbar;
     if (selectedRole === "doctor") return DoctorNavbar;
     if (selectedRole === "laboratory") return LabNavbar;
-    return LabNavbar;
+    // return LabNavbar;
   };
 
   const NavbarComponent = getNavbar();

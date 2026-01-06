@@ -25,8 +25,10 @@ const LabReportForm = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto">
-      <form onSubmit={handleMintReport} className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+    /* Changed max-w-xl to w-full and removed mx-auto if you want it aligned to the left, 
+       or kept mx-auto to center it within a very wide screen */
+    <div className="w-full px-4"> 
+      <form onSubmit={handleMintReport} className="w-full bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
         {/* Form Header */}
         <div className="bg-purple-600 p-6 text-white">
           <h2 className="text-2xl font-bold flex items-center gap-2">

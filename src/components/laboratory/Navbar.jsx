@@ -13,7 +13,6 @@ const LabNavbar = ({ activeTab, setActiveTab }) => {
     <nav className="bg-white border-b border-gray-200 px-6 py-3 shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="bg-purple-600 p-2 rounded-lg text-white font-bold">L</div>
           <span className="text-xl font-bold text-gray-900">MedChain <span className="text-purple-600">LABS</span></span>
         </div>
 
