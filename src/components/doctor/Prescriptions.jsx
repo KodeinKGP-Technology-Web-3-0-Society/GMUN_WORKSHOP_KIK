@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Pill,
   FileText,
@@ -7,7 +7,11 @@ import {
   Save,
   X,
   Hash,
+  Upload,
+  AlertCircle,
 } from "lucide-react";
+import BlockchainPrescriptionStore from "../BlockchainPrescriptionStore";
+import blockchainService from "../../services/blockchainService";
 
 // Mock data for doctor's issued prescriptions
 const MOCK_ISSUED_PRESCRIPTIONS = [
@@ -37,6 +41,10 @@ export default function Prescriptions() {
   const [prescriptions, setPrescriptions] = useState(MOCK_ISSUED_PRESCRIPTIONS);
   const [isCreating, setIsCreating] = useState(false);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const [blockchainEnabled, setBlockchainEnabled] = useState(false);
+  const [doctorId] = useState("doctor-001");
+  const [patientId, setPatientId] = useState("patient-001");
+  const [showBlockchainStore, setShowBlockchainStore] = useState(false);
   const [newPrescription, setNewPrescription] = useState({
     patientName: "",
     drug: "",
@@ -44,6 +52,11 @@ export default function Prescriptions() {
     instructions: "",
     type: "",
   });
+
+  // Check if blockchain is connected
+  useEffect(() => {
+    setBlockchainEnabled(blockchainService.isConnected);
+  }, []);
 
   const handleCreatePrescription = () => {
     if (
@@ -96,15 +109,48 @@ export default function Prescriptions() {
                   Create and manage patient prescriptions
                 </p>
               </div>
-              <button
-                onClick={() => setIsCreating(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                <Plus className="w-4 h-4" />
-                Issue Prescription
-              </button>
+              <div className="flex gap-2">
+                {blockchainEnabled && (
+                  <button
+                    onClick={() => setShowBlockchainStore(!showBlockchainStore)}
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                  >
+                    <Upload className="w-4 h-4" />
+                    {showBlockchainStore ? "Hide Blockchain" : "Store on Blockchain"}
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsCreating(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  <Plus className="w-4 h-4" />
+                  Issue Prescription
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Blockchain Alert */}
+          {!blockchainEnabled && (
+            <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center gap-3">
+              <AlertCircle className="text-yellow-600" size={20} />
+              <div>
+                <p className="text-sm font-medium text-yellow-800">Blockchain not connected</p>
+                <p className="text-xs text-yellow-700">Connect your wallet at the top to enable blockchain storage</p>
+              </div>
+            </div>
+          )}
+
+          {/* Blockchain Store Section */}
+          {blockchainEnabled && showBlockchainStore && (
+            <div className="mb-8 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-6 border border-indigo-200">
+              <h3 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center gap-2">
+                <Hash size={20} className="text-indigo-600" />
+                Store Prescription on Blockchain
+              </h3>
+              <BlockchainPrescriptionStore patientId={patientId || "patient-001"} doctorId={doctorId} />
+            </div>
+          )}
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* LEFT COLUMN: Prescription List */}

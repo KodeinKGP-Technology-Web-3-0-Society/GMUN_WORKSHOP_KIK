@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Pill, FileText, CheckCircle, Clock, Hash, Download, QrCode } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Pill, FileText, CheckCircle, Clock, Hash, Download, QrCode, Upload, AlertCircle } from "lucide-react";
+import BlockchainRecordViewer from "../BlockchainRecordViewer";
+import blockchainService from "../../services/blockchainService";
 
 // --- MOCK DATA ---
 const MOCK_PRESCRIPTIONS = [
@@ -29,9 +31,14 @@ const MOCK_PRESCRIPTIONS = [
 
 export default function Prescriptions() {
   const [selectedRxId, setSelectedRxId] = useState(null);
+  // derive blockchain enabled from service
+  const [patientId] = useState("patient-001");
+  const [showBlockchainRecords, setShowBlockchainRecords] = useState(false);
 
   // Find the selected prescription object
   const selectedRx = MOCK_PRESCRIPTIONS.find(rx => rx.id === selectedRxId);
+
+  // note: use blockchainService.isConnected when rendering to reflect live state
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -40,14 +47,49 @@ export default function Prescriptions() {
           
           {/* Header */}
           <div className="mb-8 border-b border-gray-100 pb-6">
-            <h1 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
-              <FileText className="text-blue-600" />
-              Medical Records Vault
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">
-              Access your decentralized prescriptions and verifiable health credentials.
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+                  <FileText className="text-blue-600" />
+                  Medical Records Vault
+                </h1>
+                <p className="text-sm text-gray-600 mt-1">
+                  Access your decentralized prescriptions and verifiable health credentials.
+                </p>
+              </div>
+              {blockchainService.isConnected && (
+                <button
+                  onClick={() => setShowBlockchainRecords(!showBlockchainRecords)}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+                >
+                  <Upload size={16} />
+                  {showBlockchainRecords ? "Hide Blockchain" : "View Blockchain"}
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Blockchain Alert */}
+          {!blockchainService.isConnected && (
+            <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center gap-3">
+              <AlertCircle className="text-yellow-600" size={20} />
+              <div>
+                <p className="text-sm font-medium text-yellow-800">Blockchain not connected</p>
+                <p className="text-xs text-yellow-700">Connect your wallet at the top to enable blockchain storage</p>
+              </div>
+            </div>
+          )}
+
+          {/* Blockchain Records Section */}
+          {blockchainService.isConnected && showBlockchainRecords && (
+            <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+              <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center gap-2">
+                <Hash size={20} className="text-blue-600" />
+                Blockchain Stored Records
+              </h3>
+              <BlockchainRecordViewer patientId={patientId} recordType="prescription" />
+            </div>
+          )}
 
           <div className="grid lg:grid-cols-3 gap-8">
             

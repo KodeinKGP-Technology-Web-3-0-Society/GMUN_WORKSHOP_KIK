@@ -1,5 +1,7 @@
 import { Calendar, Clock } from "lucide-react";
-import { useState} from "react";
+import { useState } from "react";
+import blockchainService from "../../services/blockchainService";
+import { BLOCKCHAIN_CONFIG } from "../../config/blockchain";
 
 
 const doctors = {
@@ -17,12 +19,13 @@ const departments = ["Cardiology", "Neurology", "Pediatrics"];
 const timeSlots = ["9:00 AM", "10:00 AM", "11:00 AM", "2:00 PM", "3:00 PM"];
 
 
-function BookingForm({onDoctorSelect}) {
- const [selectedDepartment, setSelectedDepartment] = useState("");
+function BookingForm({ onDoctorSelect, patientId = "patient-001" }) {
+  const [selectedDepartment, setSelectedDepartment] = useState("");
  const [selectedDoctor, setSelectedDoctor] = useState("");
  const [selectedDate, setSelectedDate] = useState("");
  const [selectedTime, setSelectedTime] = useState("");
  const [reason, setReason] = useState("");
+  const [status, setStatus] = useState(null);
 
 const availableDoctors =
   selectedDepartment && doctors[selectedDepartment]
@@ -34,21 +37,68 @@ const availableDoctors =
    selectedDepartment && selectedDoctor && selectedDate && selectedTime;
 
 
- const handleSubmit = () => {
-   if (!isFormValid) return;
+  const handleSubmit = () => {
+    if (!isFormValid) return;
 
+    const payload = {
+      department: selectedDepartment,
+      doctorId: selectedDoctor,
+      date: selectedDate,
+      time: selectedTime,
+      reason,
+    };
 
-   const payload = {
-     department: selectedDepartment,
-     doctorId: selectedDoctor,
-     date: selectedDate,
-     time: selectedTime,
-     reason,
-   };
+    console.log("Booking payload:", payload); // send to backend
+  };
 
+  // parse date + time like '2026-01-05' and '9:00 AM' to a Date
+  function parseDateTime(dateStr, timeStr) {
+    // timeStr format: '9:00 AM' or '11:00 PM'
+    const [time, meridian] = timeStr.split(" ");
+    const [hourStr, minStr] = time.split(":");
+    let hour = parseInt(hourStr, 10);
+    const minute = parseInt(minStr, 10);
+    if (meridian === "PM" && hour !== 12) hour += 12;
+    if (meridian === "AM" && hour === 12) hour = 0;
 
-   console.log("Booking payload:", payload); // send to backend
- };
+    const [y, m, d] = dateStr.split("-");
+    // Note: month is 0-based in JS Date
+    return new Date(Number(y), Number(m) - 1, Number(d), hour, minute, 0);
+  }
+
+  const handleBlockchainBooking = async () => {
+    if (!isFormValid) return;
+
+    setStatus({ type: "pending", text: "Submitting appointment to blockchain..." });
+
+    try {
+      if (!blockchainService.isConnected) {
+        await blockchainService.connectWallet();
+      }
+
+      if (!blockchainService.contract && BLOCKCHAIN_CONFIG.CONTRACT_ADDRESS) {
+        await blockchainService.initContract(BLOCKCHAIN_CONFIG.CONTRACT_ADDRESS);
+      }
+
+      // doctor id as string
+      const doctorIdStr = String(selectedDoctor);
+      const dt = parseDateTime(selectedDate, selectedTime);
+
+      const res = await blockchainService.storeAppointment(patientId, doctorIdStr, dt);
+
+      setStatus({ type: "success", text: `Appointment stored (tx: ${res.transactionHash?.slice(0, 10) || 'ok'})` });
+
+      // reset form
+      setSelectedDepartment("");
+      setSelectedDoctor("");
+      setSelectedDate("");
+      setSelectedTime("");
+      setReason("");
+    } catch (err) {
+      console.error(err);
+      setStatus({ type: "error", text: err.message || "Failed to store appointment" });
+    }
+  };
 
 
  return (
@@ -141,17 +191,25 @@ const availableDoctors =
            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg resize-none"
          />
        </div>
-       <button
-         disabled={!isFormValid}
-         onClick={handleSubmit}
-         className={`w-full py-3 rounded-lg ${
-           isFormValid
-             ? "bg-blue-600 text-white hover:bg-blue-700"
-             : "bg-gray-200 text-gray-400 cursor-not-allowed"
-         }`}
-       >
-         Book Appointment
-       </button>
+      <div>
+        <button
+          disabled={!isFormValid}
+          onClick={handleBlockchainBooking}
+          className={`w-full py-3 rounded-lg ${
+            isFormValid
+              ? "bg-blue-600 text-white hover:bg-blue-700"
+              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+          }`}
+        >
+          Book Appointment
+        </button>
+
+        {status && (
+          <p className={`mt-3 text-sm ${status.type === 'error' ? 'text-red-600' : status.type === 'success' ? 'text-green-600' : 'text-gray-700'}`}>
+            {status.text}
+          </p>
+        )}
+      </div>
      </div>
    </div>
  );

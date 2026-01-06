@@ -16,6 +16,41 @@ export default function BlockchainRecordViewer({ patientId, recordType = "all" }
         throw new Error("Please connect wallet first");
       }
 
+      // If viewing prescriptions, call the dedicated getter
+      if (recordType.toLowerCase() === "prescription") {
+        const pres = await blockchainService.getPrescriptions(patientId);
+
+        // Normalize to a common record shape expected by the UI
+        const mapped = pres.map((p) => ({
+          recordType: "prescription",
+          ipfsHash: "",
+          timestamp: p.timestamp || p[4] || 0,
+          doctorId: p.doctorId || p[0],
+          medication: p.medication || p[1],
+          dosage: p.dosage || p[2],
+          duration: p.duration || p[3],
+        }));
+
+        setRecords(mapped);
+        return;
+      }
+
+      if (recordType.toLowerCase() === "appointment") {
+        const appts = await blockchainService.getAppointments(patientId);
+
+        const mapped = appts.map((a) => ({
+          recordType: "appointment",
+          ipfsHash: "",
+          timestamp: a.appointmentDate || a[1] || 0,
+          doctorId: a.doctorId || a[0],
+          isCompleted: a.isCompleted || a[2] || false,
+        }));
+
+        setRecords(mapped);
+        return;
+      }
+
+      // Default: fetch generic medical records
       const allRecords = await blockchainService.getMedicalRecords(patientId);
 
       if (recordType !== "all") {
@@ -88,11 +123,24 @@ export default function BlockchainRecordViewer({ patientId, recordType = "all" }
                   </p>
                 </div>
               </div>
-              <div className="bg-gray-50 rounded p-3 mt-2">
-                <p className="text-xs text-gray-700 font-mono break-all">
-                  <strong>IPFS:</strong> {record.ipfsHash}
-                </p>
-              </div>
+
+              {/* Render prescription details when available */}
+              {record.recordType === "prescription" ? (
+                <div className="bg-gray-50 rounded p-3 mt-2 space-y-1">
+                  <p className="text-sm font-medium">{record.medication}</p>
+                  <p className="text-xs text-gray-700">Dosage: {record.dosage}</p>
+                  <p className="text-xs text-gray-700">Duration: {record.duration} days</p>
+                  {record.doctorId && (
+                    <p className="text-xs text-gray-500">Doctor: {record.doctorId}</p>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-gray-50 rounded p-3 mt-2">
+                  <p className="text-xs text-gray-700 font-mono break-all">
+                    <strong>IPFS:</strong> {record.ipfsHash}
+                  </p>
+                </div>
+              )}
             </div>
           ))}
         </div>
