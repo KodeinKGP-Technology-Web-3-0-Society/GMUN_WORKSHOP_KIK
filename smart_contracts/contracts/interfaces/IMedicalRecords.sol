@@ -7,8 +7,13 @@ pragma solidity ^0.8.20;
  */
 interface IMedicalRecords {
     
+    // ==================== Enums ====================
+    
+    enum AppointmentStatus { None, Scheduled, Completed, Cancelled }
+    
+    // ==================== Structs ====================
+    
     struct Doctor {
-        address walletAddress;
         string name;
         string licenseNumber;
         bool isVerified;
@@ -17,7 +22,6 @@ interface IMedicalRecords {
     }
     
     struct Patient {
-        address walletAddress;
         string name;
         uint256 dateOfBirth;
         uint256 registeredAt;
@@ -28,7 +32,7 @@ interface IMedicalRecords {
         address doctorAddress;
         address patientAddress;
         uint256 appointmentDateTime;
-        string status;
+        AppointmentStatus status;
         string ipfsCID;
         uint256 paymentAmount;
         bool paymentCompleted;
@@ -64,8 +68,8 @@ interface IMedicalRecords {
     function setConsultationFee(uint256 _fee) external;
     function addPrescription(uint256 _appointmentId, string memory _medicine, string memory _dosage, string memory _instructions, string memory _ipfsCID) external;
     function completeAppointment(uint256 _appointmentId) external;
-    function grantPatientAccess(address _patientAddress) external;
-    function revokePatientAccess(address _patientAddress) external;
+    function grantPatientAccess(address _doctorAddress) external;
+    function revokePatientAccess(address _doctorAddress) external;
     function withdrawEarnings() external;
     
     // Patient Functions

@@ -10,10 +10,13 @@ import "./utils/ReentrancyGuard.sol";
  */
 contract MedicalRecords is ReentrancyGuard {
     
+    // ==================== Enums ====================
+    
+    enum AppointmentStatus { None, Scheduled, Completed, Cancelled }
+    
     // ==================== Structs ====================
     
     struct Doctor {
-        address walletAddress;
         string name;
         string licenseNumber;
         bool isVerified;
@@ -22,7 +25,6 @@ contract MedicalRecords is ReentrancyGuard {
     }
     
     struct Patient {
-        address walletAddress;
         string name;
         uint256 dateOfBirth;
         uint256 registeredAt;
@@ -33,7 +35,7 @@ contract MedicalRecords is ReentrancyGuard {
         address doctorAddress;
         address patientAddress;
         uint256 appointmentDateTime;
-        string status; // "scheduled", "completed", "cancelled"
+        AppointmentStatus status;
         string ipfsCID;
         uint256 paymentAmount;
         bool paymentCompleted;
@@ -60,6 +62,8 @@ contract MedicalRecords is ReentrancyGuard {
     mapping(uint256 => Prescription) public prescriptions;
     mapping(address => uint256[]) public doctorAppointments;
     mapping(address => uint256[]) public patientAppointments;
+    mapping(address => uint256[]) public patientPrescriptions;
+    // mapping[patient][doctor] => whether patient granted doctor access
     mapping(address => mapping(address => bool)) public accessGrants;
     mapping(address => uint256) public doctorEarnings;
     
@@ -126,7 +130,6 @@ contract MedicalRecords is ReentrancyGuard {
         require(bytes(_licenseNumber).length > 0, "License number cannot be empty");
         
         doctors[msg.sender] = Doctor({
-            walletAddress: msg.sender,
             name: _name,
             licenseNumber: _licenseNumber,
             isVerified: false,
@@ -162,8 +165,8 @@ contract MedicalRecords is ReentrancyGuard {
         string memory _ipfsCID
     ) external onlyVerifiedDoctor {
         Appointment storage appt = appointments[_appointmentId];
+        require(appt.createdAt > 0, "Appointment does not exist");
         require(appt.doctorAddress == msg.sender, "You are not the doctor for this appointment");
-        require(bytes(appt.status).length > 0, "Appointment does not exist");
         
         prescriptionCounter++;
         
@@ -182,6 +185,9 @@ contract MedicalRecords is ReentrancyGuard {
         // Update appointment with prescription CID
         appt.ipfsCID = _ipfsCID;
         
+        // Index prescription by patient for efficient lookup
+        patientPrescriptions[appt.patientAddress].push(prescriptionCounter);
+        
         emit PrescriptionAdded(prescriptionCounter, _appointmentId, msg.sender);
     }
     
@@ -191,10 +197,11 @@ contract MedicalRecords is ReentrancyGuard {
      */
     function completeAppointment(uint256 _appointmentId) external onlyVerifiedDoctor {
         Appointment storage appt = appointments[_appointmentId];
+        require(appt.createdAt > 0, "Appointment does not exist");
         require(appt.doctorAddress == msg.sender, "You are not the doctor for this appointment");
-        require(keccak256(bytes(appt.status)) == keccak256(bytes("scheduled")), "Appointment is not scheduled");
+        require(appt.status == AppointmentStatus.Scheduled, "Appointment is not scheduled");
         
-        appt.status = "completed";
+        appt.status = AppointmentStatus.Completed;
         
         emit AppointmentCompleted(_appointmentId, appt.paymentAmount);
     }
@@ -203,19 +210,23 @@ contract MedicalRecords is ReentrancyGuard {
      * @dev Grant a patient access to view records
      * @param _patientAddress Address of the patient
      */
-    function grantPatientAccess(address _patientAddress) external onlyVerifiedDoctor {
-        require(patients[_patientAddress].registeredAt > 0, "Patient not registered");
-        accessGrants[msg.sender][_patientAddress] = true;
-        emit AccessGranted(msg.sender, _patientAddress);
-    }
-    
     /**
-     * @dev Revoke patient access
-     * @param _patientAddress Address of the patient
+     * @dev Patient grants a doctor access to view their records
+     * @param _doctorAddress Address of the doctor
      */
-    function revokePatientAccess(address _patientAddress) external onlyVerifiedDoctor {
-        accessGrants[msg.sender][_patientAddress] = false;
-        emit AccessRevoked(msg.sender, _patientAddress);
+    function grantPatientAccess(address _doctorAddress) external onlyRegisteredPatient {
+        require(doctors[_doctorAddress].registeredAt > 0, "Doctor not registered");
+        accessGrants[msg.sender][_doctorAddress] = true;
+        emit AccessGranted(_doctorAddress, msg.sender);
+    }
+
+    /**
+     * @dev Patient revokes a doctor's access
+     * @param _doctorAddress Address of the doctor
+     */
+    function revokePatientAccess(address _doctorAddress) external onlyRegisteredPatient {
+        accessGrants[msg.sender][_doctorAddress] = false;
+        emit AccessRevoked(_doctorAddress, msg.sender);
     }
     
     /**
@@ -246,7 +257,6 @@ contract MedicalRecords is ReentrancyGuard {
         require(_dob > 0, "Date of birth is required");
         
         patients[msg.sender] = Patient({
-            walletAddress: msg.sender,
             name: _name,
             dateOfBirth: _dob,
             registeredAt: block.timestamp
@@ -271,7 +281,7 @@ contract MedicalRecords is ReentrancyGuard {
             doctorAddress: _doctorAddress,
             patientAddress: msg.sender,
             appointmentDateTime: _dateTime,
-            status: "scheduled",
+            status: AppointmentStatus.Scheduled,
             ipfsCID: "",
             paymentAmount: doctors[_doctorAddress].consultationFee,
             paymentCompleted: false,
@@ -293,7 +303,7 @@ contract MedicalRecords is ReentrancyGuard {
         require(appt.patientAddress == msg.sender, "Only patient can pay for this appointment");
         require(msg.value == appt.paymentAmount, "Incorrect payment amount");
         require(!appt.paymentCompleted, "Payment already completed");
-        require(keccak256(bytes(appt.status)) == keccak256(bytes("completed")), "Appointment must be completed first");
+        require(appt.status == AppointmentStatus.Completed, "Appointment must be completed first");
         
         appt.paymentCompleted = true;
         doctorEarnings[appt.doctorAddress] += msg.value;
@@ -308,9 +318,9 @@ contract MedicalRecords is ReentrancyGuard {
     function cancelAppointment(uint256 _appointmentId) external onlyRegisteredPatient {
         Appointment storage appt = appointments[_appointmentId];
         require(appt.patientAddress == msg.sender, "Only patient can cancel this appointment");
-        require(keccak256(bytes(appt.status)) == keccak256(bytes("scheduled")), "Can only cancel scheduled appointments");
+        require(appt.status == AppointmentStatus.Scheduled, "Can only cancel scheduled appointments");
         
-        appt.status = "cancelled";
+        appt.status = AppointmentStatus.Cancelled;
         
         emit AppointmentCancelled(_appointmentId);
     }
@@ -320,27 +330,7 @@ contract MedicalRecords is ReentrancyGuard {
      * @return Array of prescription IDs
      */
     function viewPrescriptions() external view onlyRegisteredPatient returns (uint256[] memory) {
-        uint256 count = 0;
-        
-        // Count prescriptions for this patient
-        for (uint256 i = 1; i <= prescriptionCounter; i++) {
-            if (prescriptions[i].patientAddress == msg.sender) {
-                count++;
-            }
-        }
-        
-        // Create array and populate
-        uint256[] memory result = new uint256[](count);
-        uint256 index = 0;
-        
-        for (uint256 i = 1; i <= prescriptionCounter; i++) {
-            if (prescriptions[i].patientAddress == msg.sender) {
-                result[index] = i;
-                index++;
-            }
-        }
-        
-        return result;
+        return patientPrescriptions[msg.sender];
     }
     
     /**
@@ -384,7 +374,7 @@ contract MedicalRecords is ReentrancyGuard {
         require(patients[_patientAddress].registeredAt > 0, "Patient not registered");
         require(
             msg.sender == _patientAddress || 
-            (doctors[msg.sender].isVerified && accessGrants[msg.sender][_patientAddress]),
+            (doctors[msg.sender].isVerified && accessGrants[_patientAddress][msg.sender]),
             "Access denied"
         );
         return patients[_patientAddress];
@@ -437,6 +427,6 @@ contract MedicalRecords is ReentrancyGuard {
      * @return Boolean indicating access status
      */
     function hasAccess(address _doctorAddress, address _patientAddress) external view returns (bool) {
-        return accessGrants[_doctorAddress][_patientAddress];
+        return accessGrants[_patientAddress][_doctorAddress];
     }
 }
